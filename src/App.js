@@ -1,6 +1,10 @@
 import './App.css';
-
+import {getMovieList, searchMovie} from "./api"
+import {useEffect} from "react"
 const App = () => {
+  useEffect(() => {
+    getMovieList()
+  })
   const search = (q) => {
     console.log({q})
   }
