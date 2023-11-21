@@ -1,3 +1,4 @@
+![alt text](https://github.com/[lordziaga]/[movie-landing-page-react.js]/blob/[master]/Screenshot(11).png?raw=true)
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
