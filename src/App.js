@@ -1,49 +1,56 @@
 import './App.css';
-import { getMovieList, searchMovie } from "./api"
-import { useEffect, useState } from "react"
+import React, { useState, useEffect } from 'react';
+import { getMovieList, searchMovie } from './api';
 
 const App = () => {
-  const [popularMovies, setPopularMovies] = useState([]);
+  const [movieList, setMovieList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-      getMovieList().then((result) => {
-        setPopularMovies(result)
-      })
-    }, [])
-        
-  const PopularMovieList = () => {
-    return popularMovies.map((movie) => (
-      <div className="Movie-wrapper" key={movie.id}>
-        <div className="Movie-title">{movie.title}</div>
-        <img className="Movie-image" src={movie.poster_path} alt={movie.title} />
-        <div className="Movie-date">{movie.release_date}</div>
-        <div className="Movie-rate">{movie.vote_average}</div>
-      </div>
-    ));
-  }
+    getMovieList()
+      .then((result) => setMovieList(result))
+      .catch((error) => console.error('Error loading popular movies:', error));
+  }, []);
 
-  const search = (query) => {
-    console.log({ query });
-    // Add logic to perform movie search and update state accordingly
-  }
+  const handleSearch = async () => {
+    try {
+      const searchResults = await searchMovie(searchQuery);
+      setMovieList(searchResults);
+    } catch (error) {
+      console.error('Error searching movies:', error);
+    }
+  };
 
-  // console.log({ popularMovies: popularMovies });
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
 
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Ansal Movie</h1>
-        <input
-          placeholder="cari movie ..."
-          className="Movie-search"
-          onChange={({ target }) => search(target.value)}
+        <h1>Ansal Punya Film</h1>
+        <input className="Movie-search"
+          type="text"
+          placeholder="Ketik untuk Cari Film . . ."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyPress={handleKeyPress}
         />
         <div className="Movie-container">
-          <PopularMovieList />
+          {movieList.map((movie) => (
+            <div className="Movie-wrapper" key={movie.id}>
+              <div className="Movie-title">{movie.title}</div>
+              <img className="Movie-image" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
+              <div className="Movie-date">{movie.release_date}</div>
+              <div className="Movie-rate">{movie.vote_average}</div>
+            </div>
+          ))}
         </div>
       </header>
     </div>
-  )
-}
+  );
+};
 
 export default App;
